@@ -1,10 +1,11 @@
 import express from "express";
 import cookieParser from "cookie-parser";
 import crypto from "crypto";
-import { env } from "../config/env.js";
 import session from "express-session";
 import { OAuth2Client } from "google-auth-library";
-import { sessionConfig } from "../config/session.js";
+import { env } from "./config/env.js";
+import { sessionConfig } from "./config/session.js";
+import { cookieBase } from "./utils/cookies.js";
 
 
 const app = express();
@@ -18,11 +19,6 @@ const oauth = new OAuth2Client({
   redirectUri: env.GOOGLE_REDIRECT_URI,
 });
 
-const cookieBase = {
-  httpOnly: true,
-  sameSite: "lax",
-  path: "/",
-};
 
 app.get("/auth/google", (req, res) => {
   const state = crypto.randomBytes(16).toString("hex");
