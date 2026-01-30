@@ -1,11 +1,14 @@
 import crypto from "crypto";
+
 import { createOAuthClient } from "../config/oauth.js";
 import { env } from "../config/env.js";
+import { cookieBase } from "../utils/cookies.js"
 
 const oauth = createOAuthClient(env);
 
 
 export const startGoogleAuth = (req, res) => {
+
   const state = crypto.randomBytes(16).toString("hex");
   const verifier = crypto.randomBytes(32).toString("hex");
   const challenge = crypto
@@ -27,6 +30,7 @@ export const startGoogleAuth = (req, res) => {
 };
 
 export const googleRedirect = async (req, res) => {
+
   const code = String(req.query.code || "");
   const state = String(req.query.state || "");
   const cookieState = String(req.cookies.state || "");
@@ -56,3 +60,11 @@ export const googleRedirect = async (req, res) => {
     res.json(user);
   });
 };
+
+export const logout = (req, res) => {
+  
+  req.session.destroy(() => {
+    res.clearCookie("sid");
+    res.json("SUCCESSFULLY LOGGED OUT");
+  });
+}
