@@ -1,35 +1,21 @@
 import express from "express";
 import cookieParser from "cookie-parser";
 import crypto from "crypto";
-import dotenv from "dotenv";
+import { env } from "../config/env.js";
 import session from "express-session";
 import { OAuth2Client } from "google-auth-library";
+import { sessionConfig } from "../config/session.js";
 
-dotenv.config();
 
 const app = express();
 
 app.use(cookieParser());
-
-app.use(
-  session({
-    name: "sid",
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      httpOnly: true,
-      sameSite: "lax",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-      path: "/",
-    },
-  }),
-);
+app.use(session(sessionConfig(env)));
 
 const oauth = new OAuth2Client({
-  clientId: process.env.GOOGLE_CLIENT_ID,
-  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  redirectUri: process.env.GOOGLE_REDIRECT_URI,
+  clientId: env.GOOGLE_CLIENT_ID,
+  clientSecret: env.GOOGLE_CLIENT_SECRET,
+  redirectUri: env.GOOGLE_REDIRECT_URI,
 });
 
 const cookieBase = {
@@ -92,7 +78,7 @@ app.get("/redirect", async (req, res) => {
 
     const ticket = await oauth.verifyIdToken({
       idToken: tokens.id_token,
-      audience: process.env.GOOGLE_CLIENT_ID,
+      audience: env.GOOGLE_CLIENT_ID,
     });
 
     const user = ticket.getPayload();
