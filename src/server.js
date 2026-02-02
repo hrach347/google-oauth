@@ -16,4 +16,4 @@ app.use(session(sessionConfig(env)));
 app.use(authRoutes)
 app.use(dashboardRoutes)
 
-app.listen(3000, () => console.log("http://localhost:3000"));
+app.listen(env.PORT, () => console.log(`http://localhost:${env.PORT}`));
