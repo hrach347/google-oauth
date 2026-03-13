@@ -1,4 +1,4 @@
-# google-oauth
+# Google Oauth
 
 Minimal **Google OAuth 2.0 (Auth Code + PKCE S256 + state)** with **Express sessions**.  
 
